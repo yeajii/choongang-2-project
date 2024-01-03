@@ -1,0 +1,136 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.UsersMapper">
+
+    <select id="getUserByNickname" resultType="Users">
+        SELECT * FROM users WHERE nickname = #{nickname}
+    </select>
+
+    <insert id="insertUsers"  parameterType="Users" >
+        INSERT INTO users(id, nickname, userType, name, password, birthdate, gender, address,
+                             phone, email, consent1, consent2, isDeleted, createdAt, updatedAt,qualification)
+        VALUES(users_id_seq.nextval, #{nickname}, #{userType}, #{name}, #{password}, #{birthdate}, #{gender},#{address},
+               #{phone}, #{email}, #{consent1}, #{consent2}, '0', sysdate, null,'0')
+    </insert>
+
+    <select id="getSearchUserList" resultType="Users" parameterType="Users">
+        SELECT *
+        FROM(
+        SELECT ROWNUM rn, users.*
+        FROM users
+        WHERE 1=1
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <!-- "searchType"이 "name"일 때 -->
+                <when test="searchType == 'name'">
+                    AND name like '%' || #{keyword}|| '%'
+                </when>
+                <!-- "searchType"이 "email"일 때 -->
+                <when test="searchType == 'email'">
+                    AND email like '%' || #{keyword}|| '%'
+                </when>
+                <!-- "searchType"이 "nickname"일 때 -->
+                <when test="searchType == 'nickname'">
+                    AND nickname like '%' || #{keyword}|| '%'
+                </when>
+            </choose>
+        </if>
+        <if test="userType != null and userType != ''">
+            AND userType = #{userType}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND qualification = #{qualification}
+        </if>
+        <!-- "startDate"와 "endDate"로 가입일을 조회 -->
+        <if test="startDate != null and endDate != null">
+            AND createdAt BETWEEN #{startDate} AND #{endDate}
+        </if>
+        )
+        WHERE rn between #{start} and #{end}
+    </select>
+
+    <select id="totalUsers" resultType="int" parameterType="Users">
+        SELECT count(*)
+        FROM users
+        WHERE 1=1
+        <if test="keyword != null and keyword != ''">
+            <choose>
+                <!-- "searchType"이 "nickname"일 때 -->
+                <when test="searchType == 'nickname'">
+                    AND nickname like '%' || #{keyword}|| '%'
+                </when>
+                <!-- "searchType"이 "phone"일 때 -->
+                <when test="searchType == 'email'">
+                    AND email like '%' || #{keyword}|| '%'
+                </when>
+                <!-- "searchType"이 "name"일 때 -->
+                <when test="searchType == 'name'">
+                    AND name like '%' || #{keyword}|| '%'
+                </when>
+            </choose>
+        </if>
+
+        <if test="userType != null and userType != ''">
+            AND userType = #{userType}
+        </if>
+        <if test="qualification != null and qualification != ''">
+            AND qualification = #{qualification}
+        </if>
+        <if test="startDate != null and endDate != null">
+            AND createdAt BETWEEN #{startDate} AND #{endDate}
+        </if>
+    </select>
+
+    <select id="usersNicknameCheck" parameterType="Users" resultType="int">
+        select count(*)
+        from users
+        where nickname = #{nickname}
+    </select>
+
+    <select id="usersEmailCheck" parameterType="Users" resultType="int">
+        select count(*)
+        from users
+        where email = #{email}
+    </select>
+
+    <select id="getUserById" parameterType="Users" resultType="Users">
+        select *
+        from users
+        where id = #{id}
+    </select>
+
+    <select id="idSearchByPhone" parameterType="Users" resultType="Users">
+        select nickname
+        from users
+        where name = #{name}
+        and phone = #{phone}
+    </select>
+
+    <select id="passwordSearchByEmail" parameterType="Users" resultType="Users">
+        select password
+        from users
+        where nickname = #{nickname}
+          and email = #{email}
+    </select>
+
+    <select id="getBuyCount" parameterType="int" resultType="int">
+        select count(*)
+        from payments
+        where userid = #{id}
+    </select>
+
+    <update id="userUpdate" parameterType="Users">
+        UPDATE users
+        SET password=#{password}, gender=#{gender}, userType=#{userType}, address=#{address}, phone=#{phone},
+            consent1=#{consent1}, consent2=#{consent2}
+        WHERE id = #{id}
+    </update>
+
+    <update id="userUpdatePassword" parameterType="Users">
+        UPDATE users
+        SET password=#{password}
+        WHERE id = #{id}
+    </update>
+</mapper>

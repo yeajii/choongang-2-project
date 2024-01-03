@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.LearningRequestMapper">
+    <insert id="requestSignUp" parameterType="LearningGroupMember">
+        INSERT INTO LearningGroupMember
+        VALUES (#{groupId}, #{userId}, 0, sysdate, 0)
+    </insert>
+    <delete id="cancelSignUp" parameterType="LearningGroupMember">
+        DELETE LearningGroupMember
+        WHERE  groupId = #{groupId}
+        AND    userId =  #{userId}
+    </delete>
+    <select id="remainRequest" parameterType="LearningGroupMember" resultType="LearningGroupMember">
+        SELECT lg.contentid, lgm.groupid, lgm.userid, lgm.status, lgm.approvaldate
+        FROM   LearningGroupMember lgm
+        JOIN   learningGroup lg ON lgm.groupid = lg.id
+        WHERE  lgm.userId = #{userId}
+    </select>
+    <select id="remainRequest2" parameterType="LearningGroupMember" resultType="LearningGroupMember">
+        SELECT lg.contentid, lgm.groupid, lgm.userid, lgm.status, lgm.approvaldate
+        FROM   LearningGroupMember lgm
+        JOIN   learningGroup lg ON lgm.groupid = lg.id
+        WHERE  lgm.userId = #{userId}
+        AND    lgm.status = 1
+    </select>
+    <select id="overLimit" resultType="LearningGroup">
+        SELECT lg.*
+        FROM learninggroup lg
+        WHERE lg.groupsize = (
+            SELECT COUNT(*)
+            FROM learninggroupmember lgm
+            WHERE lgm.status = 1
+              AND lgm.groupid = lg.id
+        )
+    </select>
+    <select id="bringImage" resultType="GameContents">
+        SELECT *
+        FROM   gameContents
+    </select>
+    <select id="slgSelected" parameterType="String" resultType="String">
+        <if test="keyword == '그룹명'">
+            SELECT   DISTINCT name
+            FROM     LearningGroup lg
+        </if>
+        <if test="keyword == '교육자명'">
+            SELECT DISTINCT u.name as userName
+            FROM LearningGroup lg
+            JOIN Users u ON lg.userId = u.id
+        </if>
+    </select>
+</mapper>

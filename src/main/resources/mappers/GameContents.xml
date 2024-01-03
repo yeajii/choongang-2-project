@@ -1,0 +1,130 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.gameContentsMapper">
+
+    <!--게임콘텐츠 insert -->
+    <insert id="gameContentInsert" parameterType="GameContents">
+        INSERT INTO GameContents(
+                                 id, userId, title,
+                                 subscribeDate, gameLevel,
+                                 maxSubscribers, content,
+                                 createdAt,
+                                 price, discountRate, discountPrice,
+                                 imagePath,imageName, isDeleted
+                                )
+                        VALUES  (
+                                 GAMECONTENTS_ID_SEQ.nextval, #{userId}, #{title},
+                                 #{subscribeDate}, #{gameLevel},
+                                 #{maxSubscribers}, #{content},
+                                 sysdate,
+                                 #{price}, #{discountRate}, #{discountPrice},
+                                 #{imagePath},#{imageName}, 0
+                                )
+    </insert>
+
+
+    <!-- 게임콘텐츠 총 갯수(운영자 화면) -->
+    <select id="gameContentsTotalCount" resultType="int">
+        select      count(*)
+        from        gamecontents
+    </select>
+
+
+    <!-- 게임콘텐츠 select(운영자 화면) -->
+    <select id="gameContentsList" parameterType="GameContents" resultType="GameContents">
+          <![CDATA[
+                select *
+                from
+                    (
+                        select rownum rn, a.*
+                        from (
+                                 select      *
+                                 from        gameContents
+                                 order by    createdAt desc
+                             ) a
+                    )
+                where  rn >= #{start}
+                and    rn <= #{end}
+        ]]>
+    </select>
+
+
+    <!-- 게임콘텐츠 총 갯수(리스트에서 구독할 컨텐츠 조회 페이지) -->
+    <select id="subscribeTotalCount" resultType="int">
+        select      count(*)
+        from        gamecontents
+        where       isDeleted = 0
+    </select>
+
+
+    <!-- 리스트 조회(리스트에서 구독할 컨텐츠 조회 페이지) -->
+    <select id="subscribeGameList" parameterType="GameContents" resultType="GameContents">
+          <![CDATA[
+                select *
+                from
+                    (
+                        select rownum rn, a.*
+                        from (
+                                 select      *
+                                 from        gameContents
+                                 where       isDeleted = 0
+                                 order by    createdAt desc
+                             ) a
+                    )
+                where  rn >= #{start}
+                and    rn <= #{end}
+        ]]>
+    </select>
+
+
+<!--    버전 1
+        <select id="gameContentsListByIds"  parameterType="java.util.List" resultType="GameContents" >-->
+<!--        SELECT *-->
+<!--        FROM gameContents-->
+<!--        WHERE id IN-->
+<!--        <foreach item="item" index="index" collection="list" open="(" separator="," close=")">-->
+<!--            #{item}-->
+<!--        </foreach>-->
+<!--    </select>-->
+
+    <!-- 버전 2 : 각 아이디들의 리스트 조회 -->
+    <select id="gameContentsById" parameterType="int" resultType="GameContents">
+        SELECT  *
+        FROM    gameContents
+        WHERE   id = #{gameId}
+    </select>
+
+
+    <!-- 비공개(1) -> 공개(0) -->
+    <update id="deleteNo" parameterType="int">
+        update  gamecontents
+        set     isdeleted = 0
+        where   id = #{id}
+    </update>
+
+
+    <!-- 공개(0) -> 비공개(1) -->
+    <update id="deleteYes" parameterType="int">
+        update  gamecontents
+        set     isdeleted = 1
+        where   id = #{id}
+    </update>
+
+
+    <select id="getSubscribedGameContents" parameterType="int" resultType="GameContents">
+        SELECT gc.*
+        FROM GameContents gc
+        INNER JOIN Payments p ON gc.id = p.contentId
+        WHERE p.userId = #{userId}
+        AND p.status = 1
+        <![CDATA[AND p.purchaseDate <= SYSDATE AND ADD_MONTHS(p.purchaseDate, gc.subscribeDate) >= SYSDATE]]>
+    </select>
+
+</mapper>
+
+
+
+
+

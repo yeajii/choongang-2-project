@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.salesMapper">
+    <select id="listSales" resultType="Payments">
+        SELECT   p.id, p.userId, p.contentId, p.paymentType, p.status, p.purchaseDate, g.discountPrice, u.name, g.title
+        FROM     payments p, users u, gamecontents g
+        WHERE    p.userid = u.id
+        AND      p.contentId = g.id
+        ORDER BY purchaseDate desc
+
+    </select>
+    <select id="listSalesCount" resultType="int">
+        SELECT count(*)
+        FROM   payments
+    </select>
+    <select id="saleSearchList" resultType="Payments">
+        SELECT   p.id, p.userId, p.contentId, p.paymentType,
+                 p.status, p.purchaseDate, g.discountPrice, u.name, g.title
+        FROM     payments p
+        JOIN     gamecontents g ON g.id = p.contentId
+        JOIN     users u        ON u.id = p.userId
+        <choose>
+            <when test="status == 1">
+                <if test="searchType == 'user'">
+                    WHERE u.name like '%'|| #{keyword} || '%'
+                    AND purchaseDate BETWEEN #{keywordDate1} and #{keywordDate2}
+                </if>
+                <if test="searchType == 'content'">
+                    WHERE g.title like '%'|| #{keyword} || '%'
+                    AND purchaseDate BETWEEN #{keywordDate1} and #{keywordDate2}
+                </if>
+            </when>
+            <when test="status == 2">
+                <if test="searchType == 'user'">
+                    WHERE u.name like '%'|| #{keyword} || '%'
+                </if>
+                <if test="searchType == 'content'">
+                    WHERE g.title like '%'|| #{keyword} || '%'
+                </if>
+            </when>
+
+            <when test="status == 4">
+                <if test="searchType == 'user'">
+                    WHERE u.name like '%'|| #{keyword} || '%'
+                    AND purchaseDate <![CDATA[ >= ]]> #{keywordDate1}
+                </if>
+                <if test="searchType == 'content'">
+                    WHERE g.title like '%'|| #{keyword} || '%'
+                    AND purchaseDate <![CDATA[ >= ]]> #{keywordDate1}
+                </if>
+            </when>
+            <when test="status == 5">
+                <if test="searchType == 'user'">
+                    WHERE u.name like '%'|| #{keyword} || '%'
+                    AND purchaseDate <![CDATA[ <= ]]> #{keywordDate2}
+                </if>
+                <if test="searchType == 'content'">
+                    WHERE g.title like '%'|| #{keyword} || '%'
+                    AND purchaseDate <![CDATA[ <= ]]> #{keywordDate2}
+                </if>
+            </when>
+            <when test="status == 6">
+                WHERE purchaseDate <![CDATA[ >= ]]> #{keywordDate1}
+            </when>
+            <when test="status == 7">
+                WHERE purchaseDate <![CDATA[ <= ]]> #{keywordDate2}
+            </when>
+            <when test="status == 8">
+                WHERE purchaseDate BETWEEN #{keywordDate1} and #{keywordDate2}
+            </when>
+        </choose>
+        ORDER BY purchaseDate desc
+    </select>
+    
+    <select id="chartSelector1" parameterType="int" resultType="Payments">
+        SELECT p.id, p.userId, p.contentId, p.paymentType, p.status, p.purchaseDate, g.discountPrice
+        FROM   payments p
+        JOIN   gamecontents g ON p.contentId = g.Id
+        WHERE EXTRACT(YEAR FROM PURCHASEDATE) = #{value}
+    </select>
+
+    <select id="chartSelector2" parameterType="int" resultType="Payments">
+        SELECT p.id, p.userId, p.contentId, p.paymentType, p.status, p.purchaseDate, g.discountPrice
+        FROM   payments p
+                   JOIN   gamecontents g ON p.contentId = g.Id
+        WHERE EXTRACT(MONTH FROM PURCHASEDATE) = #{value}
+    </select>
+    
+</mapper>

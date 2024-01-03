@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE configuration PUBLIC "-//mybatis.org//DTD Config
+3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-config.dtd">
+
+<configuration>
+    <!-- 파라미터가 null이어도 DB에 insert / update할 수 있도록 -->
+    <settings>
+        <setting name="jdbcTypeForNull" value="NULL"/>
+    </settings>
+    <typeAliases>
+        <typeAlias alias="Homeworks"                type="com.oracle.projectGo.dto.Homeworks"/>
+        <typeAlias alias="DistributedHomeworks"     type="com.oracle.projectGo.dto.DistributedHomeworks"/>
+        <typeAlias alias="gameContents"             type="com.oracle.projectGo.dto.GameContents"/>
+        <typeAlias alias="Users"                    type="com.oracle.projectGo.dto.Users"/>
+        <typeAlias alias="Board"                    type="com.oracle.projectGo.dto.Board"/>
+        <typeAlias alias="payments"                 type="com.oracle.projectGo.dto.Payments"/>
+        <typeAlias alias="LearningGroup"            type="com.oracle.projectGo.dto.LearningGroup"/>
+        <typeAlias alias="LearningGroupMember"      type="com.oracle.projectGo.dto.LearningGroupMember"/>
+        <typeAlias alias="EducationalResources"     type="com.oracle.projectGo.dto.EducationalResources"/>
+    </typeAliases>
+</configuration>

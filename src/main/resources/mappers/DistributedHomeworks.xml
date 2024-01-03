@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.DistributedHomeworksMapper">
+    <insert id="insertDistributedHomeworksByBulk" parameterType="java.util.List">
+        INSERT ALL
+        <foreach collection="list" item="item">
+            INTO DistributedHomeworks (homeworkId, userId, progress, createdAt)
+            VALUES ( #{item.homeworkId}, #{item.userId},#{item.progress},sysdate)
+        </foreach>
+        SELECT * FROM dual
+    </insert>
+    <insert id="insertDistributedHomeworks" parameterType="DistributedHomeworks">
+        INSERT INTO distributedHomeworks(homeworkId, userId, createdAt)
+        VALUES ( #{homeworkId}, #{userId}, sysdate)
+    </insert>
+    <select id="getDistributedHomeworks" parameterType="DistributedHomeworks" resultType="DistributedHomeworks">
+        SELECT *
+        FROM DistributedHomeworks D
+        WHERE D.homeworkId = #{homeworkId}
+        AND D.userId = #{userId}
+
+    </select>
+    <select id="getDistributedHomeworksList" parameterType="DistributedHomeworks" resultType="DistributedHomeworks">
+        SELECT
+            D.*,
+            H.title AS homeworkTitle,
+            H.content AS homeworkContent,
+            H.progress AS homeworkProgress,
+            H.deadline AS homeworkDeadline,
+            STD.name AS userName,
+            EDU.name AS educatorName,
+            EDU.id AS educatorId
+        FROM
+            DistributedHomeworks D
+        LEFT JOIN
+            Homeworks H ON D.homeworkId = H.id
+        LEFT JOIN
+            users STD ON D.userId = STD.id
+        LEFT JOIN
+            users EDU ON H.userId = EDU.id
+        WHERE 1=1
+        <if test="homeworkId != null and homeworkId != '' and homeworkId != 0  ">
+            AND D.homeworkId = #{homeworkId}
+        </if>
+        <if test="userId != null and userId != '' and userId != 0  ">
+            AND D.userId = #{userId}
+        </if>
+        ORDER BY D.submissionDate DESC, H.deadline DESC
+    </select>
+
+<!--    <update id="updateDistributedHomeworks" parameterType="java.util.List" >
+        <foreach collection="list" item="item" separator=";">
+            UPDATE homework
+            SET evaluation = #{item.evaluation}
+            WHERE homeworkId = #{item.homeworkId} AND userId = #{item.userId}
+        </foreach>
+    </update>-->
+
+<!--    <update id="updateDistributedHomeworks" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="" close="" separator=";">
+            update distributedHomeworks
+            <set>
+                evaluation = #{item.evaluation}
+            </set>
+            WHERE homeworkId = #{item.homeworkId} AND userId = #{item.userId}
+        </foreach>
+    </update>-->
+
+<!--    <update id="updateDistributedHomeworks" parameterType="java.util.List">
+        <foreach collection="list" item="item" index="index" open="DECLARE BEGIN" close="END;" separator=";">
+            update distributedHomeworks
+            <set>
+                evaluation = #{item.evaluation}
+            </set>
+            WHERE homeworkId = #{item.homeworkId} AND userId = #{item.userId}
+        </foreach>
+    </update>-->
+    <update id="updateDistributedHomeworks" parameterType="java.util.List">
+        BEGIN
+        <foreach collection="list" item="item" index="index" open="" close="" separator="">
+            UPDATE distributedHomeworks
+            <set>
+                evaluation = #{item.evaluation}
+            </set>
+            WHERE homeworkId = #{item.homeworkId} AND userId = #{item.userId};
+        </foreach>
+        END;
+    </update>
+
+    <update id="updateSubmissionList" parameterType="java.util.List">
+        BEGIN
+        <foreach collection="list" item="item" index="index" open="" close="" separator="">
+            UPDATE distributedHomeworks
+            <set>
+                content = #{item.content},
+                questions = #{item.questions},
+                progress = #{item.progress},
+                submissionDate = sysdate
+            </set>
+            WHERE homeworkId = #{item.homeworkId} AND userId = #{item.userId};
+        </foreach>
+        END;
+
+    </update>
+    <update id="updateSubmission" parameterType="DistributedHomeworks">
+        UPDATE distributedHomeworks
+        SET
+            content = #{content},
+            questions = #{questions},
+            progress = #{progress},
+            updatedAt = sysdate
+        WHERE homeworkId = #{homeworkId} AND userId = #{userId}
+    </update>
+    <select id="getUserHomeworkProgress" parameterType="DistributedHomeworks" resultType="string">
+        SELECT *
+        FROM(
+            SELECT *
+            FROM(
+                SELECT NVL(dh.progress, 0) AS progress
+                FROM distributedhomeworks dh, homeworks h
+                WHERE dh.homeworkid = h.id
+                AND h.contentid = #{contentId}
+                AND dh.userId = #{userId}
+                AND h.userId = #{educatorId}
+                AND dh.evaluation is not null
+                UNION ALL
+                SELECT 0 AS progress FROM dual
+            ) a
+            ORDER BY progress DESC
+        )
+        WHERE ROWNUM = 1
+    </select>
+</mapper>

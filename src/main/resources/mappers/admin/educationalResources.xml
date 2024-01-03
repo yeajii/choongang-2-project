@@ -1,0 +1,122 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.EducationalResourcesMapper">
+
+    <insert id="educationUpload" parameterType="EducationalResources">
+        INSERT INTO EducationalResources
+        VALUES (EDUCATIONALRESOURCES_ID_SEQ.NEXTVAL, #{contentId}, #{userId}, #{title},
+                #{resourceType}, #{fileType}, #{fileAddress}, #{serviceType}, #{content},
+                #{image}, 0, sysdate, null)
+    </insert>
+    <select id="listEdu" parameterType="Users" resultType="EducationalResources">
+        <choose>
+            <when test="userType != 1">
+                SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress,
+                       e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                FROM   EducationalResources e
+                JOIN   GameContents g ON e.contentId = g.id
+                WHERE  e.servicetype = 1
+                <if test="id != 0">
+                    <if test="userType != 3">
+                        UNION
+                        SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress,
+                        e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                        FROM   users u
+                        JOIN   Payments p ON p.userId = u.id
+                        JOIN   EducationalResources e ON p.contentId = e.contentId
+                        JOIN   GameContents g ON p.contentId = g.id
+                        WHERE  u.Id = #{id}
+                        AND    e.serviceType = 2
+                        AND    p.status = 1
+                    </if>
+                    <if test="userType == 3">
+                        UNION
+                        SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress,
+                               e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                        FROM   learningGroup lg
+                        JOIN   EducationalResources e ON lg.contentId = e.contentId
+                        JOIN   GameContents g ON e.contentId = g.id
+                        JOIN   learningGroupMember lgm ON lgm.groupid = lg.id
+                        WHERE  lgm.userid = #{id}
+                        AND    e.serviceType = 2
+                        and    lgm.status = 1
+                    </if>
+                </if>
+            </when>
+            <otherwise>
+                SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress,
+                       e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                FROM   EducationalResources e, GameContents g
+                WHERE  e.contentId = g.id
+                ORDER by e.id desc
+            </otherwise>
+        </choose>
+    </select>
+
+    <select id="detailEdu" parameterType="int" resultType="EducationalResources">
+        SELECT *
+        FROM   EducationalResources
+        WHERE  id = #{id}
+    </select>
+
+    <update id="readCnt" parameterType="int">
+        UPDATE EducationalResources SET readcount = readcount+1 WHERE id = #{id}
+    </update>
+
+    <delete id="deleteEdu" parameterType="int">
+        DELETE EducationalResources WHERE id = #{id}
+    </delete>
+
+    <update id="updateEdu" parameterType="EducationalResources">
+        UPDATE EducationalResources
+        SET contentId = #{contentId}, userId = #{userId},
+            image = #{image}, createdAt = #{createdAt}, title = #{title},
+            resourceType = #{resourceType}, fileType = #{fileType},
+            fileAddress = #{fileAddress}, serviceType = #{serviceType},
+            content = #{content}, UPDATEDAT = sysdate
+        WHERE id = #{id}
+    </update>
+
+    <select id="listSearchEdu" parameterType="Users" resultType="EducationalResources">
+        <choose>
+            <when test="userType != 1">
+                SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress, e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                FROM   EducationalResources e
+                JOIN   GameContents g ON e.contentId = g.id
+                WHERE  e.servicetype = 1
+                <if test="id != 0">
+                    <if test="userType != 3">
+                        UNION
+                        SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress, e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                        FROM   learningGroup lg
+                        JOIN   EducationalResources e ON lg.contentId = e.contentId
+                        JOIN   GameContents g ON e.contentId = g.id
+                        WHERE  lg.userid = #{id}
+                        AND    e.serviceType = 2
+                        AND
+                    </if>
+                    <if test="userType == 3">
+                        UNION
+                        SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress, e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                        FROM   learningGroup lg
+                        JOIN   EducationalResources e ON lg.contentId = e.contentId
+                        JOIN   GameContents g ON e.contentId = g.id
+                        JOIN   learningGroupMember lgm ON lgm.groupid = lg.id
+                        WHERE  lgm.userid = #{id}
+                        AND    e.serviceType = 2
+                        and    lgm.status = 1
+                    </if>
+                </if>
+            </when>
+            <otherwise>
+                SELECT e.id, e.contentId, e.userId, e.title, e.resourceType, e.fileType, e.fileAddress, e.serviceType, e.content, e.image, e.readCount, e.createdAt, e.updatedAt, g.title as gameTitle
+                FROM   EducationalResources e, GameContents g
+                WHERE  e.contentId = g.id
+                ORDER by e.id desc
+            </otherwise>
+        </choose>
+    </select>
+
+</mapper>

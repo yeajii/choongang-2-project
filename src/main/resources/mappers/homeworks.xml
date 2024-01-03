@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.HomeworksMapper">
+    <insert id="insertHomework" parameterType="Homeworks">
+        INSERT INTO homeworks(id, userId, contentId, title, content, progress, deadline, createdAt)
+        VALUES (homeworks_id_seq.NEXTVAL, #{userId}, #{contentId}, #{title}, #{content}, #{progress}, #{deadline}, sysdate)
+    </insert>
+    <select id="getHomeworksList" resultType="Homeworks" parameterType="Homeworks">
+        SELECT *
+        FROM (
+            SELECT a.*, ROWNUM rn
+            FROM (
+                SELECT *
+                FROM homeworks
+                WHERE 1=1
+                <if test="title != null and title != ''">
+                    AND title = #{title}
+                </if>
+                AND userId = #{userId}
+                ORDER BY createdAt DESC
+            ) a
+        <choose>
+            <when test=" start != end">
+                <![CDATA[ WHERE ROWNUM <= #{end}]]>
+                )
+                WHERE rn >= #{start}
+            </when>
+            <otherwise>
+                )
+            </otherwise>
+        </choose>
+
+
+    </select>
+
+    <select id="getTotalHomeworksCnt" resultType="int" parameterType="Homeworks">
+        SELECT count(*)
+        FROM homeworks
+        WHERE 1=1
+        <if test="title != null and title != ''">
+            AND title = #{title}
+        </if>
+        <if test="userId != null and userId != '' and userId != 0 ">
+            AND userId = #{userId}
+        </if>
+    </select>
+
+    <select id="getDistinctHomeworkTitles" resultType="string">
+        SELECT DISTINCT title
+        FROM homeworks
+        WHERE userId = #{userId}
+        <if test="contentId != null and contentId != '' and contentId != 0 ">
+            AND contentId = #{contentId}
+        </if>
+
+    </select>
+
+    <select id="getDistinctHomeworkTitlesByKeyword" resultType="string" parameterType="hashMap">
+        SELECT DISTINCT title
+        FROM homeworks
+        WHERE userId = #{userId}
+        AND title LIKE '%' || #{keyword} || '%'
+    </select>
+
+    <select id="getHomework" resultType="Homeworks">
+        SELECT *
+        FROM homeworks
+        WHERE id = #{id}
+    </select>
+    <update id="updateHomeworks" parameterType="Homeworks">
+        UPDATE homeworks
+        SET
+            distributionDate = #{distributionDate},
+            updatedAt = sysdate
+        WHERE id = #{id}
+    </update>
+</mapper>

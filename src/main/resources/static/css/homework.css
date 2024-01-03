@@ -1,0 +1,93 @@
+h1 {
+    color: black;
+    font-size: 32px;
+    font-weight: 600;
+    word-wrap: break-word;
+    text-align: center;
+}
+h2 {
+    color: #0C4DA2;
+    font-size: 24px;
+    font-weight: 800;
+    word-wrap: break-word
+}
+h3 {
+    color: #6D6A6A;
+    font-size: 20px;
+    font-weight: 600;
+    word-wrap: break-word
+}
+h4 {
+    color: black;
+    font-size: 15px;
+    font-weight: 500;
+    word-wrap: break-word
+}
+
+.btn-remove {
+    padding: 0 7px;
+    height: 15px;
+    flex-shrink: 0;
+    border-radius: 10px;
+    background: #0C4DA2;
+    text-decoration: none;
+    color: #F8FCF4;
+    justify-content: center;
+    align-items: center;
+}
+.table-responsive {
+    overflow-x: auto;
+    max-height: 200px;
+}
+
+.table-responsive thead {
+    position: sticky;
+    top: 0;
+    background-color: white;
+    z-index: 999;
+}
+.detail-btn{
+    color: #0C4DA2;
+    font-size:15px;
+    font-family: Noto Sans;
+    font-style: normal;
+    font-weight: 800;
+    line-height: 18px; /* 138.462% */
+    text-decoration: none;
+}
+.date-text {
+    font-size: 16px;
+    font-weight: 600;
+    margin-right: 20px;
+    margin-left: 10px;
+    text-align: center;
+}
+.slot {
+    border: #0C4DA2 1px solid;
+    border-radius: 15px;
+    justify-content: space-around;
+    margin-bottom: 5px;
+}
+.submission-table-header{
+    color: white;
+    font-size: 22px;
+    font-weight: 600;
+    word-wrap: break-word;
+    text-align: center;
+
+}
+
+/** Added from this point */
+.twitter-typeahead{
+    width: 97%;
+}
+.tt-dropdown-menu{
+    width: 102%;
+}
+input.typeahead.tt-query{ /* This is optional */
+    width: 300px !important;
+}
+/* 자동완성 목록의 배경색 변경 */
+.tt-menu {
+    background-color: white;  /* 원하는 색상으로 변경 */
+}

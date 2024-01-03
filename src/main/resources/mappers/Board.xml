@@ -1,0 +1,417 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.BoardMapper">
+
+    <select id="boardCount" resultType="int">
+        select count(*)
+        from board a, users b
+        where a.userId = b.id
+        and a.commentIndent = 0
+        <if test="keyword != null and keyword != ''">
+            and a.title like '%' || #{keyword} || '%'
+        </if>
+        <if test="userId != null and userId != ''">
+            and a.userId = #{userId}
+        </if>
+    </select>
+
+    <select id="noticeboardCount" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD
+        WHERE boardType = 1
+    </select>
+
+    <select id="listNoticeBoard" resultType="Board">
+        SELECT A.rn ,A.id, A.BoardType, A.TITLE, A.userId, A.name, A.createdAt, A.readCount, A.isPinned, board_Group_cnt(A.id) commentCount
+        FROM
+            (
+                SELECT ROWNUM RN, C.*
+                FROM (
+                         SELECT b.*, U.name
+                         FROM BOARD b
+                                  INNER JOIN USERS U ON b.userId = U.id
+                         WHERE b.boardType = 1
+                           AND   sysdate >= b.createdAt
+                         ORDER BY b.isPinned DESC, b.createdAt DESC
+                     ) C
+            )  A
+        WHERE A.rn BETWEEN #{start} AND #{end}
+    </select>
+
+    <insert id="InsertnoticeBoard" parameterType="Board">
+        INSERT INTO Board(id, userId, boardType, title, content, status, readCount, fileName, fileSize, filePath, createdAt, isPinned, fileAddress)
+        VALUES(Board_id_seq.nextval, #{userId}, 1, #{title}, #{content}, #{status}, 0, #{fileName}, #{fileSize},
+               #{filePath}, #{createdAt}, #{isPinned}, #{fileAddress})
+    </insert>
+
+    <update id="noticeUpdate" parameterType="Board">
+        UPDATE board
+        SET title = #{title}, content = #{content}, status = #{status}, fileName = #{fileName} ,
+            fileSize =  #{fileSize},  filePath = #{filePath}, isPinned = #{isPinned}, fileAddress = #{fileAddress}
+        WHERE id = #{id}
+    </update>
+
+    <select id="noticeDetail" resultType="Board" parameterType="int">
+        SELECT BOARD.*, USERS.name AS name
+        FROM BOARD
+                 LEFT JOIN USERS ON BOARD.userId = USERS.id
+        WHERE BOARD.id = #{id}
+    </select>
+
+    <update id="increaseReadCount" parameterType="Board">
+        UPDATE BOARD SET readCount = readCount + 1 WHERE id = #{id}
+    </update>
+
+    <delete id="noticeDelete" parameterType="int">
+        delete board
+        where  id = #{id}
+    </delete>
+
+    <select id="totalSearchnotice" parameterType="board" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD b
+        INNER JOIN USERS U ON b.userId = U.id
+        WHERE boardType = 1
+        <if test="searchType == 'title'">
+            AND REGEXP_LIKE(title, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'content'">
+            AND REGEXP_LIKE(content, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'name'">
+            AND REGEXP_LIKE(u.name, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'title_content'">
+            AND (REGEXP_LIKE(title, #{keyword}, 'i') OR REGEXP_LIKE(content, #{keyword}, 'i'))
+        </if>
+    </select>
+
+    <select id="listSearchNotice" parameterType="board" resultType="board">
+        SELECT *
+        FROM (
+        SELECT ROWNUM RN, C.*, board_Group_cnt(C.id) commentCount
+        FROM (
+        SELECT b.*, U.name
+        FROM BOARD b
+        INNER JOIN USERS U ON b.userId = U.id
+        WHERE b.boardType = 1
+        <if test="searchType == 'title'">
+            AND REGEXP_LIKE(title, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'content'">
+            AND REGEXP_LIKE(content, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'name'">
+            AND REGEXP_LIKE(u.name, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'title_content'">
+            AND (REGEXP_LIKE(title, #{keyword}, 'i') OR REGEXP_LIKE(content, #{keyword}, 'i'))
+        </if>
+        ORDER BY b.createdAt DESC
+        ) C
+        )
+        WHERE RN BETWEEN #{start} AND #{end}
+    </select>
+
+    <select id="QNAboardCount" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD
+        WHERE boardType = 3
+    </select>
+
+    <select id="listQNABoard" resultType="Board">
+        SELECT A.rn ,A.id, A.BoardType, A.TITLE, A.userId, A.name, A.createdAt, A.readCount, board_Group_cnt(A.id) commentCount
+        FROM
+            (
+                SELECT ROWNUM RN, C.*
+                FROM (
+                         SELECT b.*, U.name
+                         FROM BOARD b
+                                  INNER JOIN USERS U ON b.userId = U.id
+                         WHERE b.boardType = 3
+                           AND   sysdate >= b.createdAt
+                         ORDER BY b.isPinned DESC, b.createdAt DESC
+                     ) C
+            )  A
+        WHERE A.rn BETWEEN #{start} AND #{end}
+    </select>
+
+    <insert id="InsertQNABoard" parameterType="Board">
+        INSERT INTO Board(id, userId, boardType, title, content, status, readCount, createdAt)
+        VALUES(Board_id_seq.nextval, #{userId}, 3, #{title}, #{content}, #{status}, 0, sysdate)
+    </insert>
+
+    <update id="QNAUpdate" parameterType="Board">
+        UPDATE board
+        SET title = #{title}, content = #{content}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="detailQNA" resultType="Board" parameterType="int">
+        SELECT BOARD.*, USERS.name AS name
+        FROM BOARD
+                 LEFT JOIN USERS ON BOARD.userId = USERS.id
+        WHERE BOARD.id = #{id}
+    </select>
+
+    <delete id="QNADelete" parameterType="int">
+        delete board
+        where  id = #{id}
+    </delete>
+
+    <select id="totalSearchQNA" parameterType="board" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD b
+        INNER JOIN USERS U ON b.userId = U.id
+        WHERE boardType = 3
+        <if test="searchType == 'title'">
+            AND REGEXP_LIKE(title, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'content'">
+            AND REGEXP_LIKE(content, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'name'">
+            AND REGEXP_LIKE(u.name, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'title_content'">
+            AND (REGEXP_LIKE(title, #{keyword}, 'i') OR REGEXP_LIKE(content, #{keyword}, 'i'))
+        </if>
+    </select>
+
+    <select id="listSearchQNA" parameterType="board" resultType="board">
+        SELECT *
+        FROM (
+        SELECT ROWNUM RN, C.*, board_Group_cnt(C.id) commentCount
+        FROM (
+        SELECT b.*, U.name
+        FROM BOARD b
+        INNER JOIN USERS U ON b.userId = U.id
+        WHERE b.boardType = 3
+        <if test="searchType == 'title'">
+            AND REGEXP_LIKE(title, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'content'">
+            AND REGEXP_LIKE(content, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'name'">
+            AND REGEXP_LIKE(u.name, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'title_content'">
+            AND (REGEXP_LIKE(title, #{keyword}, 'i') OR REGEXP_LIKE(content, #{keyword}, 'i'))
+        </if>
+        ORDER BY b.createdAt DESC
+        ) C
+        )
+        WHERE RN BETWEEN #{start} AND #{end}
+    </select>
+
+    <select id="FAQboardCount" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD
+        WHERE boardType = 2
+    </select>
+
+    <select id="listFAQBoard" resultType="Board">
+        SELECT A.rn ,A.id, A.BoardType, A.TITLE, A.userId, A.name, A.createdAt, A.readCount, board_Group_cnt(A.id) commentCount
+        FROM
+            (
+                SELECT ROWNUM RN, C.*
+                FROM (
+                         SELECT b.*, U.name
+                         FROM BOARD b
+                                  INNER JOIN USERS U ON b.userId = U.id
+                         WHERE b.boardType = 2
+                           AND   sysdate >= b.createdAt
+                         ORDER BY b.isPinned DESC, b.createdAt DESC
+                     ) C
+            )  A
+        WHERE A.rn BETWEEN #{start} AND #{end}
+    </select>
+
+    <insert id="InsertFAQBoard" parameterType="Board">
+        INSERT INTO Board(id, userId, boardType, title, content, status, readCount, fileName, fileSize, filePath, createdAt)
+        VALUES(Board_id_seq.nextval, #{userId}, 2, #{title}, #{content}, #{status}, 0, #{fileName}, #{fileSize},
+               #{filePath}, sysdate)
+    </insert>
+
+    <update id="FAQUpdate" parameterType="Board">
+        UPDATE board
+        SET title = #{title}, content = #{content}, status = #{status}
+        WHERE id = #{id}
+    </update>
+
+    <select id="totalSearchFAQ" parameterType="board" resultType="int">
+        SELECT COUNT(*)
+        FROM BOARD b
+        INNER JOIN USERS U ON b.userId = U.id
+        WHERE boardType = 2
+        <if test="searchType == 'title'">
+            AND REGEXP_LIKE(title, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'content'">
+            AND REGEXP_LIKE(content, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'name'">
+            AND REGEXP_LIKE(u.name, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'title_content'">
+            AND (REGEXP_LIKE(title, #{keyword}, 'i') OR REGEXP_LIKE(content, #{keyword}, 'i'))
+        </if>
+    </select>
+
+    <select id="listSearchFAQ" parameterType="board" resultType="board">
+        SELECT *
+        FROM (
+        SELECT ROWNUM RN, C.*, board_Group_cnt(C.id) commentCount
+        FROM (
+        SELECT b.*, U.name
+        FROM BOARD b
+        INNER JOIN USERS U ON b.userId = U.id
+        WHERE b.boardType = 2
+        <if test="searchType == 'title'">
+            AND REGEXP_LIKE(title, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'content'">
+            AND REGEXP_LIKE(content, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'name'">
+            AND REGEXP_LIKE(u.name, #{keyword}, 'i')
+        </if>
+        <if test="searchType == 'title_content'">
+            AND (REGEXP_LIKE(title, #{keyword}, 'i') OR REGEXP_LIKE(content, #{keyword}, 'i'))
+        </if>
+        ORDER BY b.createdAt DESC
+        ) C
+        )
+        WHERE RN BETWEEN #{start} AND #{end}
+    </select>
+
+    <select id="detailFAQ" resultType="Board" parameterType="int">
+        SELECT BOARD.*, USERS.name AS name
+        FROM BOARD
+                 LEFT JOIN USERS ON BOARD.userId = USERS.id
+        WHERE BOARD.id = #{id}
+    </select>
+
+    <delete id="FAQDelete" parameterType="int">
+        delete board
+        where  id = #{id}
+    </delete>
+
+    <update id="commentInsertTest">
+        update board
+        set commentStep = commentStep + 1
+        where commentGroupId = #{commentGroupId}
+          and commentStep > #{commentStep}
+    </update>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    <insert id="commentInsert" parameterType="Board">
+        <selectKey keyProperty="id" resultType="integer" order="BEFORE">
+            select board_id_seq.nextval from dual
+        </selectKey>
+        insert into board (id, userId, title, content, readCount, commentGroupId,
+        commentStep, commentIndent, createdAt)
+        values(#{id}, #{userId}, #{title}, #{content}, 0, #{commentGroupId}, #{commentStep}, #{commentIndent},
+        sysdate)
+    </insert>
+
+
+
+    <select id="commentDetail" parameterType="int" resultType="Board">
+        select a.id, a.userId, b.name, a.content, a.commentGroupId, a.commentStep, a.commentIndent
+        from board a, users b
+        where  a.userId = b.id
+          and commentGroupId = #{id}
+          and commentIndent >= 0
+        order by commentStep
+    </select>
+
+    <delete id="commentDelete" parameterType="int">
+        delete board
+        where id = #{id}
+    </delete>
+
+
+</mapper>

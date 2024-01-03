@@ -1,0 +1,63 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.PaymentsMapper">
+
+    <!-- 결제하기 클릭 후 payments 테이블에 insert -->
+    <insert id="subscribePayInsert" parameterType="payments">
+        insert into payments (id,                       userId, contentId, paymentType, status, purchaseDate)
+                      values (PAYMENTS_ID_SEQ.nextval, #{userId}, #{contentId}, #{paymentType}, 1, sysdate)
+    </insert>
+
+
+    <!-- 내가 구독한 게임 컨텐츠 리스트 총 갯수 -->
+    <select id="subscribeUserPayTotalCount" parameterType="int" resultType="int">
+        SELECT      count(*)
+        FROM        payments p
+        JOIN        gameContents g
+        ON          p.contentId = g.id
+        LEFT JOIN   LearningGroup l
+        ON          g.id = l.contentId
+        WHERE       p.userId = #{userId}
+    </select>
+
+
+    <!-- 내가 구독한 게임 컨텐츠 리스트 조회 -->
+    <select id="mySubscribePayList" parameterType="payments" resultType="payments">
+            select *
+            from
+                (
+                    select rownum rn, a.*
+                    from (
+                             SELECT      p.userId, p.id paymentId, p.contentid paymentContentId, g.imagename, g.discountPrice, g.subscribeDate, p.purchaseDate, l.name
+                             FROM        payments p
+                             INNER JOIN  gameContents g
+                             ON          p.contentId = g.id
+                             LEFT JOIN   LearningGroup l
+                             ON          g.id = l.contentId
+                             WHERE       p.userId = #{userId}
+                             ORDER BY    p.purchaseDate DESC
+                         ) a
+                )
+              where  rn between #{start} and #{end}
+    </select>
+
+
+    <!-- Payments 테이블에 gameContents의 id가 있는지 체크 -->
+    <select id="deleteCheck" parameterType="payments" resultType="int">
+        select  count(*)
+        from    payments
+        where   contentId = #{contentId}
+    </select>
+
+
+    <update id="userQualificationUpdate" parameterType="payments">
+        UPDATE users
+        SET  Qualification=1
+        WHERE id = #{userId}
+    </update>
+
+
+
+</mapper>

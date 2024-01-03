@@ -1,0 +1,44 @@
+.detailEdu-header {
+    border-bottom: 1px solid rgba(141, 139, 139, 0.73);
+    height: 100px;
+    display: flex;
+}
+.detailEdu-header > .detailEdu-title {
+    border: 0px solid red;
+    height: 100%;
+    width: 85%;
+}
+.detailEdu-header > .detailEdu-object {
+    border: 0px solid red;
+    height: 100%;
+    width: 15%;
+    display: flex;
+    align-items: end;
+    justify-content: end;
+    margin-right: 5px;
+}
+.detailEdu-header > .detailEdu-object button {
+    border: 0px solid black; background: #0C4DA2;
+    font-size: 20px; color: white; margin: 2px;
+}
+.detailEdu-header > .detailEdu-object button:hover {
+    opacity: 0.6; transition: 0.2s all;
+}
+.detailEdu-header > .detailEdu-title {
+    padding: 10px; margin-left: 20px;
+    display: flex; align-items: end; justify-content: start;
+}
+.detailEdu-header > .detailEdu-title > .title {
+    font-size: 2em; color: #7a817a;
+}
+
+.detailEdu-body {
+    margin-top: 30px;
+    border: 0px solid red;
+    height: auto;
+    padding: 40px;
+}
+.detailEdu-body > .contents {
+    font-size: 20px;
+}
+

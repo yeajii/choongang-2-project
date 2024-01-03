@@ -1,0 +1,243 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+
+<mapper namespace="com.oracle.projectGo.learningGroupMapper">
+    <select id="NoTotalLearningContentCnt" parameterType="GameContents" resultType="int">
+        <![CDATA[
+            SELECT  COUNT(*)
+            FROM    payments a
+            join    gameContents b
+            on      a.contentId = b.id
+            WHERE   a.userId = #{userId}
+            AND     b.createdAt <= SYSDATE
+            AND     (b.createdAt + NUMTODSINTERVAL(b.subscribeDate * 30, 'DAY')) >= SYSDATE
+            AND     b.isDeleted = 0
+        ]]>
+        <if test="keyword != null and keyword != ''">
+            AND b.title like '%' || #{keyword} || '%'
+        </if>
+    </select>
+
+    <select id="NoLearningContentList" parameterType="GameContents" resultType="GameContents">
+        <![CDATA[
+        SELECT *
+        FROM (
+            SELECT ROWNUM RN, T.*
+            FROM (
+                SELECT    a.id, a.userId, a.contentId, b.title, b.createdAt,
+                          (b.createdAt + NUMTODSINTERVAL(b.subscribeDate * 30, 'DAY')) AS subscribeEndDate,
+                          b.maxSubscribers, c.groupSize assignedPeople
+                FROM      payments a
+                JOIN      gameContents b
+                ON        a.contentId = b.id
+                LEFT JOIN (SELECT contentId, userId, SUM(groupSize) AS groupSize FROM LearningGroup GROUP BY contentId, userId) c
+                ON        a.contentId = c.contentId AND a.userId = c.userId
+                WHERE     a.userId = #{userId}
+                AND       b.createdAt <= SYSDATE
+                AND       (b.createdAt + NUMTODSINTERVAL(b.subscribeDate * 30, 'DAY')) >= SYSDATE
+                AND       b.isDeleted = 0
+        ]]>
+        <if test="keyword != null and keyword != ''">
+            AND b.title like '%' || #{keyword} || '%'
+        </if>
+        GROUP BY  a.id, a.userId, a.contentId, b.title, b.createdAt,
+                  (b.createdAt + NUMTODSINTERVAL(b.subscribeDate * 30, 'DAY')),
+                  b.maxSubscribers, c.groupSize
+            ) T
+        )
+        WHERE RN BETWEEN #{start} AND #{end}
+    </select>
+
+    <select id="NoInsertFormLearningContent" parameterType="GameContents" resultType="GameContents">
+        SELECT    a.userId payUserId, a.contentId, b.name, c.title, c.maxSubscribers, COALESCE(SUM(d.groupSize), 0) AssignedPeople
+        FROM      payments a
+        JOIN      users b
+        ON        a.userId = b.id
+        JOIN      gameContents c
+        ON        a.contentId = c.id
+        LEFT JOIN LearningGroup d
+        ON        a.userId = d.userId
+        AND       a.contentId = d.contentId
+        WHERE     c.id = #{id}
+        AND       a.userId = #{userId}
+        GROUP BY  a.userId, a.contentId, b.name, c.title, c.maxSubscribers
+    </select>
+
+    <insert id="NoInsertLearningGroup" parameterType="LearningGroup">
+        INSERT INTO learningGroup(id, contentId, userId, name, startDate, endDate, groupSize, etc1, etc2, isDeleted)
+        VALUES(LEARNINGGROUP_ID_SEQ.NEXTVAL, #{id}, #{userId}, #{name}, #{startDate}, #{endDate}, #{groupSize}, #{etc1}, #{etc2}, 0)
+    </insert>
+
+    <select id="NoTotalLearningGroupCnt" parameterType="LearningGroup" resultType="int">
+        <![CDATA[
+            SELECT COUNT(*)
+            FROM   learningGroup a
+            JOIN   gameContents b
+            ON     a.contentId = b.id
+            WHERE  a.userId = #{userId}
+            AND    a.startDate <= SYSDATE
+            AND    a.endDate >= SYSDATE
+            AND    a.isDeleted = 0
+        ]]>
+        <if test="keyword != null and keyword != ''">
+            AND a.name like '%' || #{keyword} || '%'
+        </if>
+    </select>
+
+    <select id="NoLearningGroupList" parameterType="LearningGroup" resultType="LearningGroup">
+        <![CDATA[
+            SELECT      a.id, a.contentId, a.userId, a.name, a.startDate, a.endDate, a.groupsize , b.title, COUNT(c.userId) AS studentCount
+            FROM        learningGroup a
+            JOIN        gameContents b
+            ON          a.contentId = b.id
+            LEFT JOIN   LearningGroupMember c
+            ON          a.id = c.groupId
+            WHERE       a.userId = #{userId}
+            AND         a.startDate <= SYSDATE
+            AND         a.endDate >= SYSDATE
+            AND         a.isDeleted = 0
+            ]]>
+            <if test="keyword != null and keyword != ''">
+                AND a.name like '%' || #{keyword} || '%'
+            </if>
+            GROUP BY    a.id, a.contentId, a.userId, a.name, a.startDate, a.endDate, a.groupsize , b.title
+            ORDER BY    a.id ASC
+    </select>
+
+    <select id="NoDetailLearningGroup" parameterType="learningGroup" resultType="LearningGroup">
+        SELECT  a.groupId, a.userId, a.status, a.approvalDate,
+                b.contentId, b.name, b.startDate, b.endDate, b.groupSize, b.etc1,
+                b.etc2, c.name studentName, c.phone, c.email, c.address, d.title,
+                COUNT(a.userId) OVER () AS studentCount
+        FROM    learninggroupmember a
+        JOIN    learninggroup b
+        ON      a.groupid = b.id
+        JOIN    users c
+        ON      a.userid = c.id
+        JOIN    gamecontents d
+        ON      b.contentId = d.id
+        WHERE   a.groupid = #{id}
+    </select>
+
+    <select id="NoUpdateFormLearningGroup" parameterType="int" resultType="LearningGroup">
+        SELECT    a.id, a.contentid, a.userid, a.name, a.startdate, a.enddate, a.groupsize,
+                  a.etc1, a.etc2, a.isdeleted, b.title, b.maxSubscribers, c.name AS userName,
+                  COALESCE(SUM(d.groupSize), 0) AS AssignedPeople
+        FROM      learningGroup a
+        JOIN      gameContents b ON a.contentId = b.id
+        JOIN      users c ON a.userId = c.id
+        LEFT JOIN learningGroup d ON a.contentId = d.contentId AND a.userId = d.userId
+        WHERE     a.id = #{id}
+        GROUP BY  a.id, a.contentid, a.userid, a.name, a.startdate, a.enddate, a.groupsize,
+                  a.etc1, a.etc2, a.isdeleted, b.title, b.maxSubscribers, c.name
+    </select>
+
+    <update id="NoUpdateLearningGroup" parameterType="LearningGroup">
+        UPDATE learningGroup SET name = #{name}, startDate = #{startDate},
+                                 endDate = #{endDate}, groupSize = #{groupSize},
+                                 etc1 = #{etc1}, etc2 = #{etc2}
+        WHERE id = #{id}
+    </update>
+
+    <update id="NoDeleteLearningGroupMember" parameterType="int">
+        UPDATE learningGroupMember SET isdeleted = 1, status = 0
+        WHERE groupId = #{id}
+    </update>
+
+    <update id="NoDeleteLearningGroup" parameterType="int">
+        UPDATE learningGroup SET isdeleted = 1 WHERE id = #{id}
+    </update>
+
+    <select id="NoTotalApprovalGroupMemberCnt" parameterType="LearningGroupMember" resultType="int">
+        SELECT  COUNT(*)
+        FROM    learningGroupMember a
+        JOIN    learningGroup b
+        ON      a.groupid = b.id
+        WHERE   b.userId = #{userId}
+        AND     a.isDeleted = 0
+        <if test="groupId != 0 and groupId != ''">
+            AND     b.id = #{groupId}
+        </if>
+    </select>
+
+    <select id="NoLearningGroup" parameterType="LearningGroupMember" resultType="LearningGroupMember">
+        SELECT  *
+        FROM    learningGroup
+        WHERE   userId = #{userId}
+        AND     isDeleted = 0
+    </select>
+
+    <select id="NoLearningGroupMembers" parameterType="LearningGroupMember" resultType="LearningGroupMember">
+        SELECT      a.groupId, a.userId, a.status, a.approvalDate, b.name userName, b.phone, c.contentId, c.name, c.groupSize, d.title, e.membersCount
+        FROM        learningGroupMember a
+        JOIN        users b
+        ON          a.userId = b.id
+        join        learningGroup c
+        ON          a.groupId = c.id
+        join        gameContents d
+        on          c.contentId = d.id
+        LEFT JOIN   (SELECT groupId, COUNT(*) as membersCount FROM LearningGroupMember GROUP BY groupId) e
+        ON          a.groupId = e.groupId
+        WHERE       c.userId = #{userId}
+        AND         a.isDeleted = 0
+        AND         c.id = #{groupId}
+    </select>
+
+    <update id="NoGrantMember" parameterType="LearningGroupMember">
+        UPDATE  learningGroupMember SET status = 1
+        WHERE   groupId = #{groupId}
+        AND     userId = #{userId}
+    </update>
+
+
+    <select id="getGroupMemberByGroupId" resultType="Users">
+        SELECT users.*
+        FROM learningGroupMember lgm
+        JOIN users ON lgm.userid = users.id
+        WHERE lgm.groupId = #{groupId}
+    </select>
+    <select id="getGroupMembersByEducatorId" resultType="Users">
+        SELECT u.id, u.nickname, u.userType, u.name, lg.name as groupName
+        FROM learningGroup lg
+        JOIN learningGroupMember lgm ON lg.id = lgm.groupId
+        JOIN users u ON lgm.userId = u.id
+        WHERE lg.userId = #{educatorId}
+    </select>
+
+    <select id="getUsersListByGroupInfo" resultType="Users" parameterType="LearningGroup">
+        SELECT u.*
+        FROM learningGroup lg
+        JOIN learningGroupMember lgm ON lg.id = lgm.groupId
+        JOIN users u ON lgm.userId= u.id
+        WHERE lg.userId = #{userId}
+        AND lg.contentId = #{contentId}
+        <if test="id != null and id != '' and id != 0">
+            AND lg.id = #{id}
+        </if>
+    </select>
+    
+    <!--강한빛 -->
+    <select id="signUpLearningGroup" resultType="LearningGroup">
+        SELECT   lg.id, lg.contentId, lg.userId, lg.name, TO_CHAR(lg.startdate, 'YYYY-MM-DD') as startdate, TO_CHAR(lg.enddate, 'YYYY-MM-DD') as enddate, lg.groupSize, lg.etc1, lg.etc2, g.imageName, g.imagePath, u.name as userName, g.title
+        FROM     LearningGroup lg
+        JOIN     Users u ON lg.userId = u.id
+        JOIN     GameContents g ON lg.contentId = g.id
+        ORDER BY lg.id desc
+    </select>
+
+    <select id="signUpLearningGroup2" resultType="LearningGroup">
+        SELECT   lg.id, lg.contentId, lg.userId, lg.name, TO_CHAR(lg.startdate, 'YYYY-MM-DD') as startdate, TO_CHAR(lg.enddate, 'YYYY-MM-DD') as enddate, lg.groupSize, lg.etc1, lg.etc2, g.imageName, g.imagePath, u.name as userName, g.title
+        FROM     LearningGroup lg
+        JOIN     Users u ON lg.userId = u.id
+        JOIN     GameContents g ON lg.contentId = g.id
+        <if test="category == '교육자명'">
+            WHERE    u.name like #{value}
+        </if>
+        <if test="category == '그룹명'">
+            WHERE lg.name like #{value}
+        </if>
+        ORDER BY lg.id desc
+    </select>
+
+</mapper>
