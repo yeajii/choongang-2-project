@@ -52,25 +52,18 @@
     <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/1403e500-65a5-4c12-8679-74892e0aa824"/>
 </div>
 
+- **차예지** : 게임콘텐츠 구매, 조회, 등록
+<div align=center>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/aa774e5d-42b5-4c9f-aec8-903ca41581f2"/>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/4e10d893-7e92-4528-b85f-edc278452c4f"/>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/527bb061-c0df-4fd6-81fe-53a23c0b6272"/>
+</div>
+
 <div align=left><h2>💡 주요 기능 상세</h2></div>
 
 ### 회원가입 및 로그인 기능
 
-### 학습그룹 가입신청
-- AJAX를 사용한 비동기 통신을 통해 디비와 통신하여 프론트에서 학습그룹 조회 및 필터검색 가능
-- 비동기 통신으로 그리드에 갱신된 내용을 출력하는 기능
 
-- AJAX를 사용한 비동기 통신을 통해 디비와 통신하여 프론트에서 학습그룹 가입신청 가능
-- 학습자가 가입된 그룹에 따라 혹은 학습그룹 정원이 초과됐는가 등의 여부를 따진 뒤 비동기통신으로 신청가능한지 불가능한지를 그리드에 갱신하여 출력함 
-
-
-### 매출조회
-- AJAX를 사용한 비동기 통신을 통해 디비와 통신하여 프론트에서 구매자의 구매내역 리스트를 조회 및 검색 가능
-
-- AJAX를 사용한 비동기 통신을 통해 디비와 통신하여 프론트에서 월별, 일별 매출내역에 대한 그래프 조회 가능
-
-### 교육자료 등록
-- AJAX 
 
 
 <div align=left><h2>❗ 프로젝트 회고</h2></div>
