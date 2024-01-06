@@ -18,13 +18,13 @@
 
 <div align=left><h3>📗 Development</h3></div>
 <div>
-  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white">
-  <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white">
+  <img src="https://img.shields.io/badge/java-007396?style=for-the-badge&logo=java&logoColor=white"><img src="https://img.shields.io/badge/17-515151?style=for-the-badge">
+  <img src="https://img.shields.io/badge/springboot-6DB33F?style=for-the-badge&logo=Spring Boot&logoColor=white"><img src="https://img.shields.io/badge/3.2.0-515151?style=for-the-badge">
+  <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white"><img src="https://img.shields.io/badge/8.5-515151?style=for-the-badge">
   <img src="https://img.shields.io/badge/css-1572B6?style=for-the-badge&logo=css3&logoColor=white"> 
   <img src="https://img.shields.io/badge/javascript-F7DF1E?style=for-the-badge&logo=javascript&logoColor=black"> 
   <img src="https://img.shields.io/badge/jquery-0769AD?style=for-the-badge&logo=jquery&logoColor=white">
   <img src="https://img.shields.io/badge/oracle-F80000?style=for-the-badge&logo=oracle&logoColor=white">
-  <img src="https://img.shields.io/badge/gradle-02303A?style=for-the-badge&logo=gradle&logoColor=white">
   <img src="https://img.shields.io/badge/jsp-E6700C?style=for-the-badge&logo=jsp&logoColor=white">
   <img src="https://img.shields.io/badge/mybatis-251C1D?style=for-the-badge&logo=mybatis&logoColor=white">
   <img src="https://img.shields.io/badge/bootstrap-7952B3?style=for-the-badge&logo=bootstrap&logoColor=white">
@@ -47,10 +47,11 @@
 <div align=left><h2>💻 화면 구성</h2></div>
 
 <div align=center>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/cd8ced10-4513-43a6-8f1c-f21f060248ab"/>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/444a0ac3-7812-400c-a8e6-cc1e8ba4829a"/>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/1403e500-65a5-4c12-8679-74892e0aa824"/>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/14b0ea2e-73f1-4760-b0dc-5a938d8c9ea5"/>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/d63fe316-679c-4d01-ad08-d61406aa61d0"/>
+    <div width="30%" height="200px"></div>
 </div>
+<hr>
 
 - **차예지** : 게임콘텐츠 구매, 조회, 등록
 <div align=center>
@@ -59,9 +60,25 @@
     <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/527bb061-c0df-4fd6-81fe-53a23c0b6272"/>
 </div>
 
+<div align=center>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/0ced80fa-afdd-4e86-835f-1fa763056e3a"/>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/fdf4ef7f-fac3-4869-ac24-c491f586d3f5"/>
+    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/7fc4224a-bd28-4933-b72b-097e4175776e"/>
+</div>
+<hr>
+
 <div align=left><h2>💡 주요 기능 상세</h2></div>
 
 ### 회원가입 및 로그인 기능
+
+
+<div align=left><h2>❗ 프로젝트 회고</h2></div>
+
+**🐹팀원 차예지** : 팀원들과 지속적인 소통을 통해 화면 구상에 대한 보안점을 발견하고, 이를 토대로 프로젝트의 구상이 점차 강화되었습니다. 
+이러한 경험을 통해 팀원 간의 소통이 프로젝트의 핵심적인 부분임을 깨닫게 되었습니다.
+
+
+
 
 
 
