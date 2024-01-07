@@ -78,6 +78,7 @@ public class HomeworkController {
         if (homework.getContentId() != 0) {
 
             /* TODO: 학습 그룹 리스트 받아오기 */
+            learningGroup.setUserId(userId);
             learningGroupList = learningGroupService.learningGroupList(learningGroup);
 
             /* TODO: 숙제명에 따라 숙제를 받아오는 로직 */

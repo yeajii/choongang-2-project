@@ -251,6 +251,7 @@ public class AdminResourceController {
         }
         String savedName = uid.toString() + "_" + originalName;
         File target = new File(uploadPath, savedName);
+        FileCopyUtils.copy(fileData, target);
         return savedName;
     }
 

@@ -50,18 +50,21 @@
     </select>
 
     <select id="NoInsertFormLearningContent" parameterType="GameContents" resultType="GameContents">
-        SELECT    a.userId payUserId, a.contentId, b.name, c.title, c.maxSubscribers, COALESCE(SUM(d.groupSize), 0) AssignedPeople
-        FROM      payments a
-        JOIN      users b
-        ON        a.userId = b.id
-        JOIN      gameContents c
-        ON        a.contentId = c.id
-        LEFT JOIN LearningGroup d
-        ON        a.userId = d.userId
-        AND       a.contentId = d.contentId
-        WHERE     c.id = #{id}
-        AND       a.userId = #{userId}
-        GROUP BY  a.userId, a.contentId, b.name, c.title, c.maxSubscribers
+        SELECT       a.userId payUserId, a.contentId, b.name, c.title, c.maxSubscribers, COALESCE(lg.groupSize, 0) AssignedPeople
+        FROM         payments a
+        JOIN         users b
+        ON a.userId = b.id
+        JOIN         gameContents c
+        ON a.contentId = c.id
+        LEFT JOIN (
+            SELECT   contentId, userId, SUM(groupSize) AS groupSize
+            FROM     LearningGroup
+            WHERE    isDeleted = 0
+            GROUP BY contentId, userId
+        ) lg ON  a.contentId = lg.contentId AND a.userId = lg.userId
+        WHERE        c.id = #{id}
+        AND          a.userId = #{userId}
+        AND          a.id = #{paymentId}
     </select>
 
     <insert id="NoInsertLearningGroup" parameterType="LearningGroup">
@@ -87,22 +90,29 @@
 
     <select id="NoLearningGroupList" parameterType="LearningGroup" resultType="LearningGroup">
         <![CDATA[
-            SELECT      a.id, a.contentId, a.userId, a.name, a.startDate, a.endDate, a.groupsize , b.title, COUNT(c.userId) AS studentCount
-            FROM        learningGroup a
-            JOIN        gameContents b
-            ON          a.contentId = b.id
-            LEFT JOIN   LearningGroupMember c
-            ON          a.id = c.groupId
-            WHERE       a.userId = #{userId}
-            AND         a.startDate <= SYSDATE
-            AND         a.endDate >= SYSDATE
-            AND         a.isDeleted = 0
-            ]]>
-            <if test="keyword != null and keyword != ''">
-                AND a.name like '%' || #{keyword} || '%'
-            </if>
-            GROUP BY    a.id, a.contentId, a.userId, a.name, a.startDate, a.endDate, a.groupsize , b.title
-            ORDER BY    a.id ASC
+        SELECT *
+        FROM (
+            SELECT ROWNUM RN, T.*
+            FROM (
+                SELECT      a.id, a.contentId, a.userId, a.name, a.startDate, a.endDate, a.groupsize , b.title, COUNT(c.userId) AS studentCount
+                FROM        learningGroup a
+                JOIN        gameContents b
+                ON          a.contentId = b.id
+                LEFT JOIN   LearningGroupMember c
+                ON          a.id = c.groupId
+                WHERE       a.userId = #{userId}
+                AND         a.startDate <= SYSDATE
+                AND         a.endDate >= SYSDATE
+                AND         a.isDeleted = 0
+                ]]>
+                <if test="keyword != null and keyword != ''">
+                    AND a.name like '%' || #{keyword} || '%'
+                </if>
+                GROUP BY    a.id, a.contentId, a.userId, a.name, a.startDate, a.endDate, a.groupsize , b.title
+                ORDER BY    a.id ASC
+            ) T
+        )
+        WHERE RN BETWEEN #{start} AND #{end}
     </select>
 
     <select id="NoDetailLearningGroup" parameterType="learningGroup" resultType="LearningGroup">

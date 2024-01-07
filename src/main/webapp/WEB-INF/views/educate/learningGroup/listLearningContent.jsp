@@ -18,18 +18,23 @@
         var radios = document.getElementsByName('gameContent');
         var checkedValue;
         var subscribeEndDate;
+        var paymentId;
 
-        for (var i = 0; i < radios.length; i++) {
-            if (radios[i].checked) {
+        for(var i = 0; i < radios.length; i++) {
+            if(radios[i].checked) {
                 checkedValue = radios[i].value;
                 subscribeEndDate = document.getElementById('subscribeEndDate').value;
+                paymentId = document.getElementsByName('paymentId')[i].value;
                 break;
             }
         }
-        if (checkedValue) {
-            alert(checkedValue);
-            // contentId와 subscribeEndDate를 함께 전달
-            location.href = '/group/insertFormLearningContent?id=' + checkedValue + '&subscribeEndDate=' + subscribeEndDate;
+
+        if(checkedValue) {
+            var confirmResult = confirm('학습그룹을 생성하시겠습니까?'); // confirm 함수 사용
+            if (confirmResult) {
+                // contentId, subscribeEndDate, paymentId를 함께 전달
+                location.href = '/group/insertFormLearningContent?id=' + checkedValue + '&subscribeEndDate=' + subscribeEndDate + '&paymentId=' + paymentId;
+            }
         } else {
             alert('게임콘텐츠를 선택해주세요.');
         }
@@ -77,6 +82,7 @@
                                         <td class="centered-content">
                                             <input type="radio" name="gameContent" id="gameContent" value="${contentList.contentId}">
                                             <input type="hidden" name="subscribeEndDate" id="subscribeEndDate" value="${contentList.subscribeEndDate}">
+                                            <input type="hidden" name="paymentId" id="paymentId" value="${contentList.id}">
                                         </td>
                                         <td>${contentList.title}</td>
                                         <td>

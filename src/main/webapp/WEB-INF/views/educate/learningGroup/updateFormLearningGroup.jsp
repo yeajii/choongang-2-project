@@ -12,6 +12,34 @@
         font-size: 1.2em; /* 기본 글자 크기의 1.2배 */
     }
 </style>
+<script>
+    // HTML 페이지가 로드되면 실행되는 함수
+    window.onload = function() {
+        // 'groupSize'라는 ID를 가진 input 요소를 찾고
+        var groupSizeInput = document.getElementById('groupSize');
+
+        // 만약 해당 요소가 존재한다면
+        if (groupSizeInput) {
+            // input 요소에 'input' 이벤트 리스너를 추가
+            groupSizeInput.addEventListener('input', function(e) {
+                var maxSubscribers = ${updateFormLearningGroup.maxSubscribers};
+                var assignedPeople = ${updateFormLearningGroup.assignedPeople};
+
+                // 사용자가 입력한 값
+                var inputValue = e.target.value;
+
+                // 만약 할당된 사람들의 수와 사용자가 입력한 수의 합이 최대 구독자 수를 초과한다면
+                if (assignedPeople + parseInt(inputValue) > maxSubscribers) {
+                    // 알림을 통해 사용자에게 알리고
+                    alert('입력하신 값이 너무 큽니다. ' + (maxSubscribers - assignedPeople) + ' 이하의 값을 입력해주세요.');
+
+                    // 입력된 값을 초기화합니다.
+                    e.target.value = '';
+                }
+            });
+        }
+    }
+</script>
 <body>
 <%@ include file="/WEB-INF/components/TopBar.jsp"%>
 <main>

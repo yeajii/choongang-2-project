@@ -117,7 +117,8 @@ public class GroupController {
 
     // 게임콘텐츠에서 그룹을 생성하는 폼
     @RequestMapping(value = "insertFormLearningContent")
-    public String insertFormLearningContent(GameContents gameContents, Model model, @RequestParam("subscribeEndDate") String subscribeEndDate){
+    public String insertFormLearningContent(GameContents gameContents, Model model, @RequestParam("subscribeEndDate") String subscribeEndDate,
+                                                                                    @RequestParam("paymentId") String paymentId){
 
         Users users = usersService.getLoggedInUserInfo();
         int userId = users.getId();
@@ -131,6 +132,7 @@ public class GroupController {
 
             model.addAttribute("insertFormLearningContent", insertFormLearningContent);
             model.addAttribute("subscribeEndDate",subscribeEndDate);
+            model.addAttribute("paymentId", paymentId);
         } catch (Exception e) {
             log.error("GroupController insertFormLearningContent e.getMessage() : " + e.getMessage());
         } finally {
@@ -173,14 +175,14 @@ public class GroupController {
             int totalLearningGroupCnt = groupService.totalLearningGroupCnt(learningGroup);
             log.info("totalLearningGroupCnt : " + totalLearningGroupCnt);
 
-            List<LearningGroup> learningGroupList = groupService.learningGroupList(learningGroup);
-            log.info("learningGroupList : " + learningGroupList);
-
             // paging 처리
             Paging page = new Paging(totalLearningGroupCnt, currentPage);
             learningGroup.setStart(page.getCurrentPage());
             learningGroup.setEnd(page.getEnd());
             log.info("page : " + page);
+
+            List<LearningGroup> learningGroupList = groupService.learningGroupList(learningGroup);
+            log.info("learningGroupList : " + learningGroupList);
 
             model.addAttribute("totalLearningGroupCnt", totalLearningGroupCnt);
             model.addAttribute("learningGroupList", learningGroupList);
@@ -214,14 +216,14 @@ public class GroupController {
             int totalLearningGroupCnt = groupService.totalLearningGroupCnt(learningGroup);
             log.info("totalLearningGroupCnt : " + totalLearningGroupCnt);
 
-            List<LearningGroup> learningGroupList = groupService.learningGroupList(learningGroup);
-            log.info("learningGroupList : " + learningGroupList);
-
             // paging 처리
             Paging page = new Paging(totalLearningGroupCnt, currentPage);
             learningGroup.setStart(page.getCurrentPage());
             learningGroup.setEnd(page.getEnd());
             log.info("page : " + page);
+
+            List<LearningGroup> learningGroupList = groupService.learningGroupList(learningGroup);
+            log.info("learningGroupList : " + learningGroupList);
 
             model.addAttribute("totalLearningGroupCnt", totalLearningGroupCnt);
             model.addAttribute("learningGroupList", learningGroupList);

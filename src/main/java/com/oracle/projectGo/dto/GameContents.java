@@ -59,5 +59,7 @@ public class GameContents {
 
     private Date subscribeEndDate;    //
 
+    private int paymentId;              // 결제번호
+
 
 }

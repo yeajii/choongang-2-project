@@ -13,13 +13,13 @@
 
     <!-- 내가 구독한 게임 컨텐츠 리스트 총 갯수 -->
     <select id="subscribeUserPayTotalCount" parameterType="int" resultType="int">
-        SELECT      count(*)
-        FROM        payments p
-        JOIN        gameContents g
-        ON          p.contentId = g.id
-        LEFT JOIN   LearningGroup l
-        ON          g.id = l.contentId
-        WHERE       p.userId = #{userId}
+        SELECT  COUNT(*)
+        FROM    learninggroup a
+        JOIN    gamecontents b
+        ON      a.contentId = b.id
+        JOIN    payments p
+        ON      a.userId = p.userId AND b.id = p.contentId
+        WHERE   a.userId = #{userId}
     </select>
 
 
@@ -35,7 +35,7 @@
                              INNER JOIN  gameContents g
                              ON          p.contentId = g.id
                              LEFT JOIN   LearningGroup l
-                             ON          g.id = l.contentId
+                             ON          g.id = l.contentId AND l.userId = p.userId
                              WHERE       p.userId = #{userId}
                              ORDER BY    p.purchaseDate DESC
                          ) a
