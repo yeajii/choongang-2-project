@@ -1,30 +1,39 @@
 <div align=left><h2>🚩거민시스템 바둑 교육 사이트🚩</h2></div>
 Spring Boot + Mybatis
 
-<div align=left><h2>프로젝트 소개</h2></div>
-바둑관련 교육 및 학습환경을 관리하고 지원하는 교육 관리 시스템 입니다.
+<div align=left><h2>🔔 프로젝트 소개</h2></div>
+중앙정보처리학원에서 기업 프로젝트에 참여하여 진행한 프로젝트로 <br>
+바둑관련 교육 및 학습환경을 관리하고 지원하는 교육 관리 시스템 입니다. 
 
-### 개발 기간
-#### 2023/12/01 - 2024/01/04
-1. 사전 준비: 12/01 - 12/07
+<div align=left><h2>🗒 프로젝트 구조</h2></div>
+
+![구조](readme_image/project_process.png)
+
+
+
+<div align=left><h2>🔍 개발 기간</h2></div>
+
+### 2023/12/01 - 2024/01/04
+
+(1) 사전 준비 : 12/01 - 12/07
 - 업무 분석 및 개발 환경 구축
 - 기초 기술 학습
 - DB 모델링
   
-2. 기초 설계: 12/08 - 12/14
+(2) 기초 설계 : 12/08 - 12/14
 - 화면 구성
 - API 설계
 - DB 생성
   
-3. 웹 페이지 개발: 12/15 - 12/21
+(3) 웹 페이지 개발 : 12/15 - 12/21
 - 게임콘텐츠 구매, 조회, 등록
   
-4. 통합 및 테스트: 12/22 - 12/28
+(4) 통합 및 테스트 : 12/22 - 12/28
 - 기능 통합 및 테스트
 - 세부 기능 개선
 - 디자인 개선
   
-5. 피트백: 12/29 - 01/04
+(5) 피트백 : 12/29 - 01/04
 - 산출물 정리 
 - 발표자료 작성
 - 최종 발표 
@@ -63,13 +72,13 @@ Spring Boot + Mybatis
 
 **🐹팀원 윤상엽** : 공지, FAQ, Q&A, 게시물 등록
 
-**🐹팀원 차예지** : 게임콘텐츠 구매, 조회, 등록
+**🐹팀원 차예지** : 게임콘텐츠 구매, 조회, 등록, 결제
 
 **🐹팀원 정송환** : 로그인, 회원가입, 회원조회
 
 **🐹팀원 강한빛** : 학습그룹 가입신청, 매출조회, 교육자료 등록
 
-<div align=left><h2>💻 화면 구성</h2></div>
+<div align=left><h2>💻 메인 화면 구성</h2></div>
 
 <div align=center>
     <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/14b0ea2e-73f1-4760-b0dc-5a938d8c9ea5"/>
@@ -78,28 +87,19 @@ Spring Boot + Mybatis
 </div>
 <hr>
 
-- **차예지** : 게임콘텐츠 구매, 조회, 등록, 결제 
-<div align=center>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/aa774e5d-42b5-4c9f-aec8-903ca41581f2"/>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/4e10d893-7e92-4528-b85f-edc278452c4f"/>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/527bb061-c0df-4fd6-81fe-53a23c0b6272"/>
-</div>
+<h2>💡 주요 기능 상세</h2>
+🐹팀원 차예지 : 게임콘텐츠 구매, 조회, 등록, 결제
 
-<div align=center>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/0ced80fa-afdd-4e86-835f-1fa763056e3a"/>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/fdf4ef7f-fac3-4869-ac24-c491f586d3f5"/>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/7fc4224a-bd28-4933-b72b-097e4175776e"/>
-</div>
-<hr>
+### 🔎 게임콘텐츠 등록 
+<img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/fdf4ef7f-fac3-4869-ac24-c491f586d3f5"/>
 
-<div align=left><h2>💡 주요 기능 상세</h2></div>
-
-### 게임콘텐츠 등록 
 - 운영자가 게임콘텐트를 등록
 - '공개'로 자동 등록
 - Bean Validation을 통한 입력에 대한 유효성 검증
   
-### 게임콘텐츠 조회 
+### 🔎 게임콘텐츠 조회 
+<img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/7fc4224a-bd28-4933-b72b-097e4175776e"/>
+
 - 운영자가 게임콘텐츠를 등록한 후에 운영자만 게임콘텐트를 조회
 - 비동기 활용으로 공개/비공개 여부를 checkbox로 상태 설정
 - 운영자가 게임콘텐츠를 공개 또는 비공개로 전환 가능 <br>
@@ -110,24 +110,31 @@ Spring Boot + Mybatis
     조건: 비공개 대상이 결제되지 않은 게임콘텐츠이므로 조건 없음 <br>
     결과: 구독(결제) 가능하게 됨 <br>
 
-### 게임콘텐츠 구독 신청
+### 🔎 게임콘텐츠 구독 신청
+<img width="45%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/4e10d893-7e92-4528-b85f-edc278452c4f"/>
+<img width="44%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/0ced80fa-afdd-4e86-835f-1fa763056e3a"/>
+
 - 교육자/일반인이 하나 또는 다수의 게임콘텐츠를 checkbox 클릭하여 구독(결제)가능
 - checkbox 선택 안하고 '구독하기' 버튼 눌렀을 때 alert으로 알림 메시지 표시
 - 교육자/일반인: '구독하기' 버튼 노출 O
 - 학습자/운영지: '구독하기' 버튼 노출 X
 
-### 게임콘텐츠 결제
+### 🔎 게임콘텐츠 결제
+<img src="https://github.com/qlc9808/projectGo/assets/137845430/aa774e5d-42b5-4c9f-aec8-903ca41581f2"/> 
+
 - 하나 또는 다수의 게임콘텐츠를 구독(결제) 가능
 - 게임콘텐츠의 id(pk)를 List로 받음 -> 다중 행 Insert
 - Transaction을 통한 오류 시 rollback 가능 -> 데이터 무결성
 
-### 내 구독 상품 조회 
+### 🔎 내 구독 상품 조회 
+<img src="https://github.com/qlc9808/projectGo/assets/137845430/527bb061-c0df-4fd6-81fe-53a23c0b6272"/>
+
 - 교육자가 구독(결제)한 후 학습그룹을 생성할 수 있음
 - 학습그룹 생성 전, 학습 그룹 칸은 비어 있게 됨
 - 학습그룹 생성 후, 본인의 학습 그룹이 나타남
 - 3개의 Table (학습 그룹, 게임콘텐츠, 결제) Join
 
-<div align=left><h2>❗ 프로젝트 회고</h2></div>
+<div align=left><h2>📮 프로젝트 회고</h2></div>
 
 **🐹팀원 차예지** <br>
 팀원이 각자 맡은 페이지의 ERD를 구상하고 프로젝트를 진행하는 과정에서 ERD 수정이 이뤄진 경험을 했습니다. 한 테이블의 간단한 수정이 있더라도 연관 되어 있는 다른 테이블과의 관계를 고려해 전체적으로 수정이 필요하게 되었습니다. 이로 인하여 개발 일정에 예상치 못한 차질이 생기는 등의 어려움을 겪었습니다. 이 경험을 통해 ERD가 프로젝트의 핵심 요소 중 하나라는 것을 더욱더 알게 되었습니다. 따라서 초기에 검토하고 수정하는 과정을 더욱 신중히 해야 함을 깨닫게 되었습니다. 팀원들과 지속적인 소통을 통해 화면 구상에 대한 보안점을 발견하고, 이를 토대로 프로젝트의 구상이 점차 강화되었습니다. 이러한 경험을 통해 팀원 간의 소통이 프로젝트의 핵심적인 부분임을 깨닫게 되었습니다.
