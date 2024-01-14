@@ -7,8 +7,12 @@ Spring Boot + Mybatis
 
 <div align=left><h2>🗒 프로젝트 구조</h2></div>
 
-![구조](readme_image/project_process.png)
+![](readme_image/project_process.png)
 
+
+<div align=left><h2>🗒 ERD</h2></div>
+
+![](readme_image/projectGo_erd.png)
 
 
 <div align=left><h2>🔍 개발 기간</h2></div>
@@ -80,10 +84,9 @@ Spring Boot + Mybatis
 
 <div align=left><h2>💻 메인 화면 구성</h2></div>
 
-<div align=center>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/14b0ea2e-73f1-4760-b0dc-5a938d8c9ea5"/>
-    <img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/d63fe316-679c-4d01-ad08-d61406aa61d0"/>
-    <div width="30%" height="200px"></div>
+<div>
+    <img width="47%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/14b0ea2e-73f1-4760-b0dc-5a938d8c9ea5"/>
+    <img width="47%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/d63fe316-679c-4d01-ad08-d61406aa61d0"/>
 </div>
 <hr>
 
@@ -91,14 +94,15 @@ Spring Boot + Mybatis
 🐹팀원 차예지 : 게임콘텐츠 구매, 조회, 등록, 결제
 
 ### 🔎 게임콘텐츠 등록 
-<img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/fdf4ef7f-fac3-4869-ac24-c491f586d3f5"/>
+<img src="https://github.com/qlc9808/projectGo/assets/137845430/fdf4ef7f-fac3-4869-ac24-c491f586d3f5"/>
 
-- 운영자가 게임콘텐트를 등록
-- '공개'로 자동 등록
+- 운영자가 게임명, 학습 난이도, 구독 기간, 구독 가능 인원수, 패키지 내용, 이미지 등록
+- 정가를 입력하고 내부적으로 할인율을 계산한 후 그 값을 입력하면 판매가가 자동으로 계산됨 -> Java Script 
+- 첫 등록은 '공개'로 등록되어짐
 - Bean Validation을 통한 입력에 대한 유효성 검증
-  
+
 ### 🔎 게임콘텐츠 조회 
-<img width="30%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/7fc4224a-bd28-4933-b72b-097e4175776e"/>
+<img src="https://github.com/qlc9808/projectGo/assets/137845430/7fc4224a-bd28-4933-b72b-097e4175776e"/>
 
 - 운영자가 게임콘텐츠를 등록한 후에 운영자만 게임콘텐트를 조회
 - 비동기 활용으로 공개/비공개 여부를 checkbox로 상태 설정
@@ -111,8 +115,8 @@ Spring Boot + Mybatis
     결과: 구독(결제) 가능하게 됨 <br>
 
 ### 🔎 게임콘텐츠 구독 신청
-<img width="45%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/4e10d893-7e92-4528-b85f-edc278452c4f"/>
-<img width="44%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/0ced80fa-afdd-4e86-835f-1fa763056e3a"/>
+<img width="47%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/4e10d893-7e92-4528-b85f-edc278452c4f"/>
+<img width="47%" height="200px" src="https://github.com/qlc9808/projectGo/assets/137845430/0ced80fa-afdd-4e86-835f-1fa763056e3a"/>
 
 - 교육자/일반인이 하나 또는 다수의 게임콘텐츠를 checkbox 클릭하여 구독(결제)가능
 - checkbox 선택 안하고 '구독하기' 버튼 눌렀을 때 alert으로 알림 메시지 표시
