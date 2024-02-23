@@ -82,6 +82,24 @@ Spring Boot + Mybatis
 
 **🐹팀원 강한빛** : 학습그룹 가입신청, 매출조회, 교육자료 등록
 
+<div align=left><h2>📝 맡은 부분</h2></div>
+GameController<br> 
+PaymentController<p>
+
+GameService<br>
+PaymentService<p>
+
+GameDao<br>
+PayDao<p>
+
+게임콘텐츠 등록 - gameContentInsert.jsp<br>
+게임콘텐츠 조회 - gameContentSelect.jsp<p>
+
+게임콘텐츠 구독 신청 - subscribeView.jsp<br>
+게임콘텐츠 결제 - subscribePay.jsp<br>
+나의 구독 상품 조회 - subscribeUserPay.jsp<p>
+
+
 <div align=left><h2>💻 메인 화면 구성</h2></div>
 
 <div>
