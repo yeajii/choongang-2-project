@@ -96,8 +96,8 @@ PayDao<p>
 게임콘텐츠 조회 - gameContentSelect.jsp<p>
 
 게임콘텐츠 구독 신청 - subscribeView.jsp<br>
-게임콘텐츠 결제 - subscribePay.jsp<br>
-나의 구독 상품 조회 - subscribeUserPay.jsp<p>
+게임콘텐츠 결제      - subscribePay.jsp<br>
+나의 구독 상품 조회  - subscribeUserPay.jsp<p>
 
 
 <div align=left><h2>💻 메인 화면 구성</h2></div>
